@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <title>ABC 小學 - 個人體重管理系統</title>
+    <!-- ✅ 新增：令 iPad / 手機自動適應畫面寬度 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, "Microsoft JhengHei", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 20px auto;
+            background: #ffffff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .header {
+            padding: 16px 20px;
+            background: #2b6cb0;
+            color: white;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .header p {
+            margin: 2px 0 0;
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            background: #f9fafb;
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px 0;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .tab.active {
+            background: #ffffff;
+            border-bottom: 2px solid #2b6cb0;
+            font-weight: 600;
+            color: #2b6cb0;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 180px;
+            margin-right: 12px;
+            margin-bottom: 10px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 6px 8px;
+            font-size: 13px;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #2b6cb0;
+            box-shadow: 0 0 0 1px rgba(43,108,176,0.2);
+        }
+
+        .button-row {
+            margin-top: 4px;
+            margin-bottom: 16px;
+        }
+
+        button {
+            padding: 6px 16px;
+            font-size: 14px;
+            border-radius: 4px;
+            border: none;
+            background: #2b6cb0;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #2c5282;
+        }
+
+        button.secondary {
+            background: #4a5568;
+        }
+
+        button.secondary:hover {
+            background: #2d3748;
+        }
+
+        .section-title {
+            font-weight: 600;
+            margin: 16px 0 8px;
+            font-size: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 4px;
+        }
+
+        .output-box {
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            padding: 10px;
+            font-size: 13px;
+            background: #f7fafc;
+            margin-bottom: 10px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            font-size: 13px;
+        }
+
+        th, td {
+            border: 1px solid #e2e8f0;
+            padding: 6px 8px;
+            text-align: left;
+        }
+
+        th {
+            background: #edf2f7;
+        }
+
+        .stat-box {
+            font-size: 13px;
+            padding: 8px;
+            background: #f7fafc;
+            border-radius: 4px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 10px;
+        }
+
+        .small {
+            font-size: 12px;
+            color: #4a5568;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 18px;
+            }
+            .form-group {
+                min-width: 100%;
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>ABC 小學 - 個人體重管理系統</h1>
+        <p>示範動態網站原型（單一頁面：家長介面 & 學校介面）</p>
+    </div>
+
+    <div class="tabs">
+        <div class="tab active" id="parentTab">家長介面</div>
+        <div class="tab" id="schoolTab">學校介面</div>
+    </div>
+
+    <!-- 家長介面 -->
+    <div class="content" id="parentView">
+        <h2 style="margin-top:0;font-size:16px;">家長介面</h2>
+        <p class="small">請輸入學生資料、身高（cm）及體重（kg），系統會自動計算 BMI 並儲存。</p>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>學生姓名：</label>
+                <input type="text" id="pName" placeholder="例如：Chan Tai Man">
+            </div>
+            <div class="form-group">
+                <label>學號：</label>
+                <input type="text" id="pStudentId" placeholder="例如：S001">
+            </div>
+            <div class="form-group">
+                <label>班別：</label>
+                <input type="text" id="pClass" placeholder="例如：P1A">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>身高（cm）：</label>
+                <input type="number" id="pHeight" placeholder="例如：140" min="50" max="220" step="0.1">
+            </div>
+            <div class="form-group">
+                <label>體重（kg）：</label>
+                <input type="number" id="pWeight" placeholder="例如：35" min="10" max="200" step="0.1">
+            </div>
+        </div>
+
+        <div class="button-row">
+            <button onclick="submitParent()">提交</button>
+            <button class="secondary" onclick="clearParentForm()">清除</button>
+        </div>
+
+        <div class="section-title">計算結果</div>
+        <div class="output-box" id="pResultBox">
+            尚未有 BMI 記錄。
+        </div>
+
+        <div class="section-title">最近三次 BMI 平均值</div>
+        <div class="output-box" id="pAverageBox">
+            尚未有足夠記錄計算平均值。
+        </div>
+
+        <div class="section-title">該學生所有 BMI 記錄</div>
+        <div id="pRecordTableWrapper" class="output-box">
+            目前沒有任何記錄。
+        </div>
+    </div>
+
+    <!-- 學校介面 -->
+    <div class="content" id="schoolView" style="display:none;">
+        <h2 style="margin-top:0;font-size:16px;">學校介面</h2>
+        <p class="small">老師可按班別或學號查詢學生 BMI 記錄及簡單統計資料。</p>
+
+        <div class="section-title">按班別列出 BMI</div>
+        <div class="form-row">
+            <div class="form-group" style="max-width:220px;">
+                <label>班別：</label>
+                <input type="text" id="sClass" placeholder="例如：P1A">
+            </div>
+            <div class="button-row">
+                <button onclick="searchByClass()">查詢</button>
+            </div>
+        </div>
+        <div class="stat-box" id="sClassStats">
+            尚未選擇班別。
+        </div>
+        <div id="sClassTableWrapper" class="output-box">
+            暫時沒有資料。
+        </div>
+
+        <div class="section-title">按學號查詢學生 BMI</div>
+        <div class="form-row">
+            <div class="form-group" style="max-width:220px;">
+                <label>學號：</label>
+                <input type="text" id="sStudentId" placeholder="例如：S001">
+            </div>
+            <div class="button-row">
+                <button onclick="searchByStudentId()">查詢</button>
+            </div>
+        </div>
+        <div id="sStudentTableWrapper" class="output-box">
+            尚未查詢任何學生。
+        </div>
+    </div>
+</div>
+
+<script>
+    // 模擬資料庫：students = { studentId: { name, className, records: [ {dateTime, heightCm, weightKg, bmi} ] } }
+    const students = {};
+
+    // Tab 切換
+    const parentTab = document.getElementById('parentTab');
+    const schoolTab = document.getElementById('schoolTab');
+    const parentView = document.getElementById('parentView');
+    const schoolView = document.getElementById('schoolView');
+
+    parentTab.addEventListener('click', () => {
+        parentTab.classList.add('active');
+        schoolTab.classList.remove('active');
+        parentView.style.display = 'block';
+        schoolView.style.display = 'none';
+    });
+
+    schoolTab.addEventListener('click', () => {
+        schoolTab.classList.add('active');
+        parentTab.classList.remove('active');
+        schoolView.style.display = 'block';
+        parentView.style.display = 'none';
+    });
+
+    // 家長介面：提交
+    function submitParent() {
+        const name = document.getElementById('pName').value.trim();
+        const studentId = document.getElementById('pStudentId').value.trim();
+        const className = document.getElementById('pClass').value.trim();
+        const heightCm = parseFloat(document.getElementById('pHeight').value);
+        const weightKg = parseFloat(document.getElementById('pWeight').value);
+
+        if (!name || !studentId || !className || isNaN(heightCm) || isNaN(weightKg)) {
+            alert('請填寫所有資料（姓名、學號、班別、身高、體重）。');
+            return;
+        }
+
+        if (heightCm <= 0 || weightKg <= 0) {
+            alert('身高及體重必須為正數。');
+            return;
+        }
+
+        const heightM = heightCm / 100; // cm → m
+        const bmi = weightKg / (heightM * heightM);
+        const bmiRounded = Math.round(bmi * 10) / 10;
+
+        if (!students[studentId]) {
+            students[studentId] = {
+                name: name,
+                className: className,
+                records: []
+            };
+        } else {
+            // 更新姓名 / 班別（保持最新）
+            students[studentId].name = name;
+            students[studentId].className = className;
+        }
+
+        students[studentId].records.push({
+            dateTime: new Date(),
+            heightCm: heightCm,
+            weightKg: weightKg,
+            bmi: bmiRounded
+        });
+
+        updateParentView(studentId);
+        alert('已成功儲存 BMI 記錄。');
+    }
+
+    function clearParentForm() {
+        document.getElementById('pName').value = '';
+        document.getElementById('pStudentId').value = '';
+        document.getElementById('pClass').value = '';
+        document.getElementById('pHeight').value = '';
+        document.getElementById('pWeight').value = '';
+        document.getElementById('pResultBox').innerHTML = '尚未有 BMI 記錄。';
+        document.getElementById('pAverageBox').innerHTML = '尚未有足夠記錄計算平均值。';
+        document.getElementById('pRecordTableWrapper').innerHTML = '目前沒有任何記錄。';
+    }
+
+    // 更新家長畫面
+    function updateParentView(studentId) {
+        const student = students[studentId];
+        if (!student) return;
+
+        const records = student.records;
+        const latest = records[records.length - 1];
+
+        const resultBox = document.getElementById('pResultBox');
+        resultBox.innerHTML =
+            `<div>學生：<strong>${student.name}</strong>　班別：<strong>${student.className}</strong>　學號：<strong>${studentId}</strong></div>` +
+            `<div>最新記錄時間：${formatDateTime(latest.dateTime)}</div>` +
+            `<div>身高：${latest.heightCm.toFixed(1)} cm　體重：${latest.weightKg.toFixed(1)} kg</div>` +
+            `<div>最新 BMI：<strong>${latest.bmi.toFixed(1)}</strong></div>`;
+
+        // 最近三次平均
+        const last3 = records.slice(-3);
+        if (last3.length === 0) {
+            document.getElementById('pAverageBox').innerHTML = '尚未有足夠記錄計算平均值。';
+        } else {
+            const sum = last3.reduce((acc, r) => acc + r.bmi, 0);
+            const avg = sum / last3.length;
+            document.getElementById('pAverageBox').innerHTML =
+                `最近 ${last3.length} 次 BMI 的平均值：<strong>${avg.toFixed(1)}</strong>`;
+        }
+
+        // 所有記錄表格
+        const tableWrapper = document.getElementById('pRecordTableWrapper');
+        if (records.length === 0) {
+            tableWrapper.innerHTML = '目前沒有任何記錄。';
+            return;
+        }
+
+        let html = '<table><thead><tr>' +
+            '<th>日期時間</th><th>身高 (cm)</th><th>體重 (kg)</th><th>BMI</th>' +
+            '</tr></thead><tbody>';
+
+        records.forEach(r => {
+            html += `<tr>
+                        <td>${formatDateTime(r.dateTime)}</td>
+                        <td>${r.heightCm.toFixed(1)}</td>
+                        <td>${r.weightKg.toFixed(1)}</td>
+                        <td>${r.bmi.toFixed(1)}</td>
+                     </tr>`;
+        });
+
+        html += '</tbody></table>';
+        tableWrapper.innerHTML = html;
+    }
+
+    // 學校介面：按班別
+    function searchByClass() {
+        const className = document.getElementById('sClass').value.trim();
+        const statsBox = document.getElementById('sClassStats');
+        const tableWrapper = document.getElementById('sClassTableWrapper');
+
+        if (!className) {
+            alert('請輸入班別。');
+            return;
+        }
+
+        const rows = [];
+        for (const id in students) {
+            if (students[id].className.toLowerCase() === className.toLowerCase()) {
+                students[id].records.forEach(r => {
+                    rows.push({
+                        studentId: id,
+                        name: students[id].name,
+                        className: students[id].className,
+                        dateTime: r.dateTime,
+                        bmi: r.bmi,
+                        heightCm: r.heightCm,
+                        weightKg: r.weightKg
+                    });
+                });
+            }
+        }
+
+        if (rows.length === 0) {
+            statsBox.innerHTML = `班別 <strong>${className}</strong> 暫時沒有任何 BMI 記錄。`;
+            tableWrapper.innerHTML = '暫時沒有資料。';
+            return;
+        }
+
+        const sum = rows.reduce((acc, r) => acc + r.bmi, 0);
+        const avg = sum / rows.length;
+        statsBox.innerHTML =
+            `班別 <strong>${className}</strong> 的 BMI 總記錄數：<strong>${rows.length}</strong>，` +
+            `全班 BMI 平均值：約 <strong>${avg.toFixed(1)}</strong>。`;
+
+        let html = '<table><thead><tr>' +
+            '<th>學號</th><th>姓名</th><th>班別</th><th>日期時間</th>' +
+            '<th>身高 (cm)</th><th>體重 (kg)</th><th>BMI</th>' +
+            '</tr></thead><tbody>';
+
+        rows.forEach(r => {
+            html += `<tr>
+                        <td>${r.studentId}</td>
+                        <td>${r.name}</td>
+                        <td>${r.className}</td>
+                        <td>${formatDateTime(r.dateTime)}</td>
+                        <td>${r.heightCm.toFixed(1)}</td>
+                        <td>${r.weightKg.toFixed(1)}</td>
+                        <td>${r.bmi.toFixed(1)}</td>
+                     </tr>`;
+        });
+
+        html += '</tbody></table>';
+        tableWrapper.innerHTML = html;
+    }
+
+    // 學校介面：按學號
+    function searchByStudentId() {
+        const studentId = document.getElementById('sStudentId').value.trim();
+        const wrapper = document.getElementById('sStudentTableWrapper');
+
+        if (!studentId) {
+            alert('請輸入學號。');
+            return;
+        }
+
+        const student = students[studentId];
+        if (!student) {
+            wrapper.innerHTML = `學號 <strong>${studentId}</strong> 沒有任何記錄。`;
+            return;
+        }
+
+        const records = student.records;
+        if (records.length === 0) {
+            wrapper.innerHTML = `學號 <strong>${studentId}</strong> 暫時沒有記錄。`;
+            return;
+        }
+
+        let html = `<div>學生：<strong>${student.name}</strong>　班別：<strong>${student.className}</strong>　學號：<strong>${studentId}</strong></div><br>`;
+        html += '<table><thead><tr>' +
+            '<th>日期時間</th><th>身高 (cm)</th><th>體重 (kg)</th><th>BMI</th>' +
+            '</tr></thead><tbody>';
+
+        records.forEach(r => {
+            html += `<tr>
+                        <td>${formatDateTime(r.dateTime)}</td>
+                        <td>${r.heightCm.toFixed(1)}</td>
+                        <td>${r.weightKg.toFixed(1)}</td>
+                        <td>${r.bmi.toFixed(1)}</td>
+                    </tr>`;
+        });
+
+        html += '</tbody></table>';
+        wrapper.innerHTML = html;
+    }
+
+    // 工具：日期時間格式
+    function formatDateTime(dt) {
+        const d = new Date(dt);
+        const y = d.getFullYear();
+        const m = padZero(d.getMonth() + 1);
+        const day = padZero(d.getDate());
+        const h = padZero(d.getHours());
+        const min = padZero(d.getMinutes());
+        return `${y}-${m}-${day} ${h}:${min}`;
+    }
+
+    function padZero(n) {
+        return n < 10 ? '0' + n : n;
+    }
+</script>
+</body>
+</html>
